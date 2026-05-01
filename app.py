@@ -1585,13 +1585,12 @@ col4.metric(
 # -----------------------------
 # Tabs
 # -----------------------------
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Deal Pipeline",
     "Capital Partners",
     "Comps",
     "AI Intelligence",
     "Natural Language Query",
-    "Production Roadmap",
     "App Specification"
 ])
 
@@ -1881,133 +1880,6 @@ Output:
 
 
 with tab6:
-    st.subheader("Production Roadmap")
-
-    st.markdown(
-        """
-### Current prototype security
-
-The submitted app uses dummy data persisted in a local SQLite database and a prototype role selector. It demonstrates role-based access behaviour at the UI level, but does not implement production authentication or database-level authorisation.
-
-Implemented in the prototype:
-
-- Dummy data is stored in a local SQLite database
-- No real proprietary deal, investor or transaction data is used
-- No API keys are committed to the codebase
-- API keys are read from environment variables or entered at runtime for the current Streamlit session
-- Mock AI mode can be enabled if the app needs to run without sending data to external AI APIs
-- Role-based visibility is demonstrated in the UI
-- AI context is reduced or restricted based on selected role
-- Report downloads can be disabled for lower-permission roles
-
-### Deployment and runtime API key handling
-
-The prototype is intended to be hosted so reviewers can access the app without setting up the project locally.
-
-To allow live AI testing without hardcoding credentials:
-
-- Reviewers can enter an optional Claude API key in the sidebar
-- The key is used only for the current session
-- The key is not committed to the repository
-- The app also supports `ANTHROPIC_API_KEY` as an environment variable
-- If no key is provided, the app returns a setup message rather than failing
-
-This is a prototype convenience. In production, user-entered API keys would be removed and model calls would be routed through a secure backend AI service.
-
-### Production authentication and access control
-
-Production access would be enforced through:
-
-- Single sign-on via Microsoft Entra ID or Google Workspace
-- Role-Based Access Control [RBAC]
-- Database-level permissions
-- Route/API-level permission checks
-- Separate read/write permissions by team and asset/deal sensitivity
-- Privileged admin controls for managing access
-
-### Data storage
-
-The current prototype uses SQLite because it provides lightweight persistence without requiring external infrastructure.
-
-In production, this would be replaced by PostgreSQL with:
-
-- Normalised tables for partners, contacts, deals, notes, comps and AI reports
-- Foreign key relationships between records
-- Indexed fields for sector, geography, IRR, stage and transaction date
-- Proper migration management
-- Backup and recovery procedures
-- Database-level access controls
-
-### Third-party AI API handling
-
-Claude would be accessed through a secure backend service, not directly from the frontend.
-
-Controls would include:
-
-- No API keys in client-side code
-- Environment-secret management
-- Data minimisation before prompt construction
-- Redaction of unnecessary personal/confidential fields
-- Enterprise API settings preventing training on customer data
-- Defined prompt/response retention policy
-- Logging of source record IDs without storing unnecessary raw sensitive content
-
-### Encryption
-
-Production data security would include:
-
-- Encryption at rest for PostgreSQL and document storage
-- TLS/HTTPS for data in transit
-- Secret management for API keys and database credentials
-- Optional field-level encryption for highly sensitive investor or deal data
-
-### Audit and governance
-
-The production system would maintain an audit trail for:
-
-- User logins
-- Record reads and writes
-- AI report generation
-- Source records used in AI prompts
-- Human approvals for AI-suggested updates
-- Email/voice ingestion decisions
-
-### Voice ingestion
-
-Voice notes would be handled through:
-
-1. Speech-to-text transcription
-2. LLM classification of note type: meeting note, deal update or comp entry
-3. Entity matching to capital partner, deal or comp record
-4. Human review screen showing the proposed database update
-5. Approved write to the database with audit log
-
-### Email ingestion
-
-Incoming emails would follow:
-
-1. Secure mailbox connection
-2. Email parsing and attachment extraction
-3. Classification into meeting note, deal update, underwrite, or market comp
-4. Field extraction into structured schema
-5. Human approval before database write
-6. Audit trail showing source email, suggested update and approving user
-
-### Production architecture
-
-The Streamlit prototype would become:
-
-- React front end
-- FastAPI backend
-- PostgreSQL database
-- Secure document storage
-- Claude-powered AI service layer
-- Retrieval-Augmented Generation [RAG] over structured data and documents
-- Human review workflow for AI-suggested database updates
-"""
-    )
-
-with tab7:
     st.title("Integrated Intelligence Platform — Specification")
 
     st.info(
@@ -2365,6 +2237,68 @@ A production version would include:
 
     st.divider()
 
+with st.expander("Additional production implementation detail"):
+    st.markdown(
+        """
+### Production authentication and access control
+
+Production access would be enforced through:
+
+- Single sign-on via Microsoft Entra ID or Google Workspace
+- Role-Based Access Control [RBAC]
+- Database-level permissions
+- Route/API-level permission checks
+- Separate read/write permissions by team and asset/deal sensitivity
+- Privileged admin controls for managing access
+
+### Production data storage
+
+The current prototype uses SQLite because it provides lightweight persistence without requiring external infrastructure.
+
+In production, this would be replaced by PostgreSQL with:
+
+- Normalised tables for partners, contacts, deals, notes, comps and AI reports
+- Foreign key relationships between records
+- Indexed fields for sector, geography, IRR, stage and transaction date
+- Proper migration management
+- Backup and recovery procedures
+- Database-level access controls
+
+### Voice ingestion
+
+Voice notes would be handled through:
+
+1. Speech-to-text transcription
+2. LLM classification of note type: meeting note, deal update or comp entry
+3. Entity matching to capital partner, deal or comp record
+4. Human review screen showing the proposed database update
+5. Approved write to the database with audit log
+
+### Email ingestion
+
+Incoming emails would follow:
+
+1. Secure mailbox connection
+2. Email parsing and attachment extraction
+3. Classification into meeting note, deal update, underwrite, or market comp
+4. Field extraction into structured schema
+5. Human approval before database write
+6. Audit trail showing source email, suggested update and approving user
+
+### Production architecture
+
+The Streamlit prototype would become:
+
+- React front end
+- FastAPI backend
+- PostgreSQL database
+- Secure document storage
+- Claude-powered AI service layer
+- Retrieval-Augmented Generation [RAG] over structured data and documents
+- Human review workflow for AI-suggested database updates
+"""
+    )
+
     # -----------------------------
     # Task 1 Self-Assessment
     # -----------------------------
@@ -2426,125 +2360,125 @@ A production version would include:
     st.divider()
 
     # -----------------------------
-# What I Would Do With More Time (AI-Lead Focused)
-# -----------------------------
-st.markdown("## 8. AI and Platform Roadmap (What I Would Do If Given More Time)")
+    # What I Would Do With More Time (AI-Lead Focused)
+    # -----------------------------
+    st.markdown("## 8. AI and Platform Roadmap (What I Would Do If Given More Time)")
 
-with st.expander("1. Introduce a Structured AI Layer", expanded=True):
-    st.markdown(
-        """
-Move from direct prompt calls to a dedicated AI service layer within the application.
+    with st.expander("1. Introduce a Structured AI Layer", expanded=True):
+        st.markdown(
+            """
+    Move from direct prompt calls to a dedicated AI service layer within the application.
 
-This would include:
+    This would include:
 
-- centralised prompt management
-- standardised input and output schemas
-- logging of all AI interactions
-- versioning of prompts and models
+    - centralised prompt management
+    - standardised input and output schemas
+    - logging of all AI interactions
+    - versioning of prompts and models
 
-**Benefit:**  
-Makes AI behaviour consistent, testable and auditable across the platform, rather than ad hoc.
-"""
-    )
+    **Benefit:**  
+    Makes AI behaviour consistent, testable and auditable across the platform, rather than ad hoc.
+    """
+        )
 
-with st.expander("2. Implement Document-Aware AI (RAG)"):
-    st.markdown(
-        """
-Extend the system beyond structured tables to include unstructured data:
+    with st.expander("2. Implement Document-Aware AI (RAG)"):
+        st.markdown(
+            """
+    Extend the system beyond structured tables to include unstructured data:
 
-- underwrites  
-- IC papers  
-- emails  
-- meeting notes  
+    - underwrites  
+    - IC papers  
+    - emails  
+    - meeting notes  
 
-AI responses would be grounded in retrieved internal data, not just prompts.
+    AI responses would be grounded in retrieved internal data, not just prompts.
 
-**Benefit:**  
-Enables deeper insight such as:
-- “Why did we pass on this deal?”
-- “What concerns did this investor raise previously?”
-"""
-    )
+    **Benefit:**  
+    Enables deeper insight such as:
+    - “Why did we pass on this deal?”
+    - “What concerns did this investor raise previously?”
+    """
+        )
 
-with st.expander("3. Introduce Task-Specific AI Workflows"):
-    st.markdown(
-        """
-Replace generic AI calls with structured, task-specific workflows:
+    with st.expander("3. Introduce Task-Specific AI Workflows"):
+        st.markdown(
+            """
+    Replace generic AI calls with structured, task-specific workflows:
 
-- Investment analysis workflow  
-- Capital raising workflow  
-- Comps benchmarking workflow  
+    - Investment analysis workflow  
+    - Capital raising workflow  
+    - Comps benchmarking workflow  
 
-Each workflow would:
+    Each workflow would:
 
-- take structured inputs  
-- perform multi-step reasoning  
-- return structured outputs  
+    - take structured inputs  
+    - perform multi-step reasoning  
+    - return structured outputs  
 
-**Benefit:**  
-Aligns AI outputs with real analyst workflows, improving reliability and usability.
-"""
-    )
+    **Benefit:**  
+    Aligns AI outputs with real analyst workflows, improving reliability and usability.
+    """
+        )
 
-with st.expander("4. AI Evaluation and Feedback Loops"):
-    st.markdown(
-        """
-Introduce systems to measure and improve AI performance over time:
+    with st.expander("4. AI Evaluation and Feedback Loops"):
+        st.markdown(
+            """
+    Introduce systems to measure and improve AI performance over time:
 
-- user feedback (useful / not useful)
-- tracking which outputs are used in real workflows
-- evaluation datasets for testing prompts
-- automated prompt regression testing
+    - user feedback (useful / not useful)
+    - tracking which outputs are used in real workflows
+    - evaluation datasets for testing prompts
+    - automated prompt regression testing
 
-**Benefit:**  
-Turns AI from a static feature into a continuously improving system.
-"""
-    )
+    **Benefit:**  
+    Turns AI from a static feature into a continuously improving system.
+    """
+        )
 
-with st.expander("5. AI Security and Governance"):
-    st.markdown(
-        """
-Extend the security model specifically for AI usage:
+    with st.expander("5. AI Security and Governance"):
+        st.markdown(
+            """
+    Extend the security model specifically for AI usage:
 
-- prompt injection protection
-- strict data scoping before model calls
-- redaction of sensitive fields (investor names, pricing)
-- no retention of sensitive prompts in external systems
-- audit logging of all AI requests and responses
-- human-in-the-loop approval for critical outputs
+    - prompt injection protection
+    - strict data scoping before model calls
+    - redaction of sensitive fields (investor names, pricing)
+    - no retention of sensitive prompts in external systems
+    - audit logging of all AI requests and responses
+    - human-in-the-loop approval for critical outputs
 
-**Benefit:**  
-Prevents data leakage and ensures AI outputs are controlled, traceable and safe.
-"""
-    )
+    **Benefit:**  
+    Prevents data leakage and ensures AI outputs are controlled, traceable and safe.
+    """
+        )
 
-with st.expander("6. Role-Aware AI Outputs"):
-    st.markdown(
-        """
-Adapt AI responses based on user role:
+    with st.expander("6. Role-Aware AI Outputs"):
+        st.markdown(
+            """
+    Adapt AI responses based on user role:
 
-- capital markets → investor-focused outputs  
-- asset management → operational insights  
-- fund administration → structured reporting  
+    - capital markets → investor-focused outputs  
+    - asset management → operational insights  
+    - fund administration → structured reporting  
 
-**Benefit:**  
-Ensures outputs are relevant and prevents unnecessary exposure of sensitive information.
-"""
-    )
+    **Benefit:**  
+    Ensures outputs are relevant and prevents unnecessary exposure of sensitive information.
+    """
+        )
 
-with st.expander("7. Production AI Architecture"):
-    st.markdown(
-        """
-Move from direct API calls to a production-grade AI architecture:
+    with st.expander("7. Production AI Architecture"):
+        st.markdown(
+            """
+    Move from direct API calls to a production-grade AI architecture:
 
-- backend AI service layer
-- managed secrets (no user-entered keys)
-- request validation and rate limiting
-- monitoring and alerting
-- centralised logging of AI usage
+    - backend AI service layer
+    - managed secrets (no user-entered keys)
+    - request validation and rate limiting
+    - monitoring and alerting
+    - centralised logging of AI usage
 
-**Benefit:**  
-Aligns with enterprise AI deployment standards and improves scalability, reliability and security.
+    **Benefit:**  
+    Aligns with enterprise AI deployment standards and improves scalability, reliability and security.
 """
     )
 
