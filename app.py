@@ -1884,7 +1884,9 @@ with tab6:
 
     st.info(
         "This page summarises what the prototype does, why it was built this way, "
-        "how AI is used, and how the system would be taken into production."
+        "how AI is used, and how the system would be taken into production. "
+        "\n\nNote: Please expand all collapsed tabs to read all details in the specification."
+
     )
 
     # -----------------------------
